@@ -1,0 +1,57 @@
+created: 20221113004241075
+description: from the early 90's
+modified: 20221114032254984
+name: Alternative Layout
+tags: $:/tags/Layout
+title: $:/.alt/PageTemplate
+type: text/vnd.tiddlywiki
+
+\whitespace trim
+\define containerClasses()
+tc-page-container tc-page-view-$(storyviewTitle)$ tc-language-$(languageTitle)$
+\end
+\import [[$:/core/ui/PageMacros]] [all[shadows+tiddlers]tag[$:/tags/Macro]!has[draft.of]]
+
+<$vars
+	tv-config-toolbar-icons={{$:/config/Toolbar/Icons}}
+	tv-config-toolbar-text={{$:/config/Toolbar/Text}}
+	tv-config-toolbar-class={{$:/config/Toolbar/ButtonClass}}
+	tv-enable-drag-and-drop={{$:/config/DragAndDrop/Enable}}
+	tv-show-missing-links={{$:/config/MissingLinks}}
+	storyviewTitle={{$:/view}}
+	languageTitle={{{ [{$:/language}get[name]] }}}>
+
+<div class=<<containerClasses>>>
+
+<$navigator story="$:/StoryList" history="$:/HistoryList" openLinkFromInsideRiver={{$:/config/Navigation/openLinkFromInsideRiver}} openLinkFromOutsideRiver={{$:/config/Navigation/openLinkFromOutsideRiver}} relinkOnRename={{$:/config/RelinkOnRename}}>
+
+<$dropzone enable=<<tv-enable-drag-and-drop>>>
+
+<div class="alt-box">
+
+{{$:/.alt/Topbar}}
+
+<div class="alt-main">
+
+<$list filter="
+          [all[shadows+tiddlers]tag[$:/tags/PageTemplate]!has[draft.of]]
+          -[[$:/core/ui/PageTemplate/topleftbar]]
+          -[[$:/core/ui/PageTemplate/toprightbar]]
+          -[[$:/.alt/Topbar]]
+" variable="listItem">
+
+<$transclude tiddler=<<listItem>>/>
+
+</$list>
+
+</div>
+
+</div>
+
+</$dropzone>
+
+</$navigator>
+
+</div>
+
+</$vars>

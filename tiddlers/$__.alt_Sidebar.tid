@@ -1,0 +1,35 @@
+created: 20221113212309757
+creator: 马不前
+modified: 20230507131146257
+modifier: 马不前
+tags: $:/tags/PageTemplate
+title: $:/.alt/Sidebar
+type: text/vnd.tiddlywiki
+
+<$list filter="[[$:/state/.alt/sidebar]get[text]] +[else[yes]!match[no]]" variable=".">
+
+<div class="alt-sidebar">
+
+<h2>Tables of Contents</h2>
+
+<h3>Example Contents</h3>
+
+<<toc "toc">>
+
+<dl>
+<dt><h3>Tutorial TOC</h3></dt>
+<$list filter="[list[tutorial]]">
+<dd><$link /></dd>
+</$list>
+<dt><h3>Custom System Tiddlers</h3></dt>
+<$list filter="[prefix[$:/.alt/]]">
+<dd><$link /></dd>
+</$list>
+</dl>
+
+
+<$transclude $tiddler="node-explorer-colorful" $field=title $mode=block/>
+
+</div>
+
+</$list>

@@ -1,0 +1,117 @@
+created: 20221113230726474
+modified: 20221115052838316
+tags: $:/tags/Stylesheet
+title: $:/.alt/Stylesheet
+type: text/vnd.tiddlywiki
+
+<!-- ============
+        Basic Page Layout
+        ============ -->
+
+.alt-box {
+   display: flex;
+   flex-direction: column;
+}
+
+.alt-box .alt-topbar {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+}
+
+.alt-box .alt-main {
+   display: grid;
+   grid-template-rows: 1fr;
+   grid-template-columns: auto 1fr auto;
+}
+
+.alt-main .tc-sidebar-scrollable {
+   position: relative;
+   grid-row: 1 / 2;
+   grid-column: 3 / 4;
+}
+
+.alt-main .tc-story-river {
+   grid-row: 1 / 2;
+   grid-column: 2 / 3;
+}
+
+.alt-main .alt-sidebar {
+   grid-row: 1 / 2;
+   grid-column: 1 / 2;
+}
+
+
+
+<!-- =====
+        Top Bar
+        ===== -->
+
+.alt-box .alt-topbar {
+   background-color: <<colour background>>;
+   box-shadow: 0 1px 2px 1px <<colour pre-border>>;
+   position: sticky; top: 0;
+   z-index: 200;
+}
+
+.alt-box .alt-topbar .tc-topbar {
+   flex: 1 0 auto;
+   position: relative;
+   padding: 0.25rem 0.5rem;
+}
+
+.alt-box .alt-topbar .tc-topbar-left {
+   display: flex;
+   justify-content: flex-start;
+   left: 0; top: 0;
+}
+
+.alt-box .alt-topbar .tc-topbar-right {
+   display: flex;
+   justify-content: flex-end;
+   right: 0; top: 0;
+}
+
+.alt-box .alt-topbar .tc-topbar-left .tc-show-sidebar-btn {
+   transform: rotate(180deg);
+}
+
+
+
+
+<!-- ========
+        Story River
+        ======== -->
+
+.alt-box .alt-main .tc-story-river {
+   margin: 0;
+   padding: 2rem;
+}
+
+
+
+<!-- ======
+        Sidebars
+        ====== -->
+
+.alt-box .alt-main .tc-sidebar-scrollable,
+.alt-box .alt-main .alt-sidebar {
+   margin: 0;
+   padding: 1rem;
+}
+
+.alt-box .alt-main .tc-sidebar-scrollable {
+<$list filter="[[$:/state/sidebar]get[text]] +[else[yes]match[no]]" variable=".">
+   width: 0;
+</$list>
+}
+
+.alt-box .alt-main .alt-sidebar {
+<$list filter="[[$:/state/.alt/sidebar]get[text]] +[else[yes]match[no]]" variable=".">
+   width: 0;
+</$list>
+}
+
+.alt-box .alt-main .alt-sidebar h2 {
+   margin: 0;
+}

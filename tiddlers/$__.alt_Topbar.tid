@@ -1,0 +1,19 @@
+created: 20221113221520095
+modified: 20221114023858815
+tags: 
+title: $:/.alt/Topbar
+type: text/vnd.tiddlywiki
+
+<div class="alt-topbar tc-adjust-top-of-scroll">
+
+<$list filter="
+          [[$:/core/ui/PageTemplate/topleftbar]]
+          [[$:/core/ui/PageTemplate/toprightbar]]
+          [all[shadows+tiddlers]tag[$:/tags/AltTopBar]!has[draft.of]]
+" variable="listItem">
+
+<$transclude tiddler=<<listItem>>/>
+
+</$list>
+
+</div>
