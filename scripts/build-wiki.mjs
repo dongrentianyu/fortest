@@ -21,8 +21,6 @@ try {
 try {
   // npm run build:public
   await $`cp ${repoFolder}/tiddlers/favicon.ico ${folderToServe}/favicon.ico`;
-  await $`cp ${repoFolder}/tiddlers/TiddlyWikiIconWhite.png ${folderToServe}/TiddlyWikiIconWhite.png`;
-  await $`cp ${repoFolder}/tiddlers/TiddlyWikiIconBlack.png ${folderToServe}/TiddlyWikiIconBlack.png`;
 } catch (error) {
   console.log(error);
 }
@@ -30,12 +28,11 @@ try {
 // exclude edit related plugins, make it readonly, and reduce size
 await $`tiddlywiki ${repoFolder} --build readonlyexternalimages`;
 await $`tiddlywiki ${repoFolder} --build externaljs`;
-// npm run build:sitemap
-await $`tiddlywiki . --rendertiddler sitemap sitemap.xml text/plain && mv ${repoFolder}/output/sitemap.xml ${folderToServe}/sitemap.xml`;
+
 // npm run build:minifyHTML
 const htmlMinifyPath = `${repoFolder}/output/index-minify.html`;
 const htmlOutputPath = `${folderToServe}/index.html`;
-await $`html-minifier-terser -c ./html-minifier-terser.config.json -o ${htmlMinifyPath} ${repoFolder}/output/index.html`;
+await $`html-minifier-terser -c ./scripts/html-minifier-terser.config.json -o ${htmlMinifyPath} ${repoFolder}/output/index.html`;
 // build dll.js and config tw to load it
 // original filename contains invalid char, will cause static server unable to load it
 const htmlContent = fs.readFileSync(htmlMinifyPath, 'utf-8');
@@ -47,59 +44,5 @@ await $`workbox injectManifest workbox-config.js`;
 
 // build downloadable html
 await $`tiddlywiki ${repoFolder} --build externalimages`;
-await $`html-minifier-terser -c ./html-minifier-terser.config.json -o ${htmlMinifyPath} ${repoFolder}/output/index.html`;
+await $`html-minifier-terser -c ./scripts/html-minifier-terser.config.json -o ${htmlMinifyPath} ${repoFolder}/output/index.html`;
 await $`mv ${htmlMinifyPath} ${folderToServe}/index-full.html`;
-
-/**
- * 构建离线HTML版本：核心JS和资源文件包括在HTML中， 下载后可以使用(就是单文件版本的wiki)
- * @param {string} distDir 目标路径，空或者不填则默认为'dist'
- * @param {string} htmlName HTML名称，空或者不填则默认为'index.html'
- * @param {boolean} minify 是否最小化JS和HTML，默认为true
- * @param {string} excludeFilter 要排除的tiddler的过滤表达式，默认为'-[is[draft]]'
- */
-function buildOfflineHTML(distDir, htmlName, minify, excludeFilter) {
-    if (typeof distDir !== 'string' || distDir.length === 0) distDir = 'dist';
-    if (typeof htmlName !== 'string' || htmlName.length === 0) htmlName = 'index.html';
-    if (typeof minify !== 'boolean') minify = true;
-    if (typeof excludeFilter !== 'string') excludeFilter = '-[is[draft]]';
-
-    // 构建HTML
-    shell(`npx tiddlywiki . --output ${distDir}` +
-        ' --deletetiddlers \'[[$:/UpgradeLibrary]] [[$:/UpgradeLibrary/List]]\'' +
-        ` --rendertiddler $:/plugins/tiddlywiki/tiddlyweb/save/offline index-raw.html text/plain "" publishFilter "${excludeFilter}"`
-    );
-
-    // 最小化：HTML
-    if (minify) {
-        shellI(`npx html-minifier-terser -c scripts/html-minifier-terser.config.json -o ${distDir}/${htmlName} ${distDir}/index-raw.html && rm ${distDir}/index-raw.html`);
-    } else {
-        shellI(`mv ${distDir}/index-raw.html ${distDir}/${htmlName}`);
-    }
-}
-
-/**
- * 构建插件源
- * @param {string} pluginFilter 要发布插件的过滤器，默认为 '[prefix[$:/plugins/]!prefix[$:/plugins/tiddlywiki/]!prefix[$:/languages/]!prefix[$:/themes/tiddlywiki/]!tag[$:/tags/PluginLibrary]]'
- * @param {string} distDir 目标路径，空或者不填则默认为'dist/library'
- * @param {boolean} minify 是否最小化HTML，默认为true
- */
-function buildLibrary(pluginFilter, distDir, minify) {
-    if (typeof pluginFilter !== 'string' || pluginFilter.length === 0) pluginFilter = '[prefix[$:/plugins/]!prefix[$:/plugins/tiddlywiki/]!prefix[$:/languages/]!prefix[$:/themes/tiddlywiki/]!tag[$:/tags/PluginLibrary]]';
-    if (typeof distDir !== 'string' || distDir.length === 0) distDir = 'dist/library';
-    if (typeof minify !== 'boolean') minify = true;
-
-    shell(`npx tiddlywiki . --output ${distDir}` +
-        ' --makelibrary $:/UpgradeLibrary' +
-        ` --savelibrarytiddlers $:/UpgradeLibrary ${pluginFilter} recipes/library/tiddlers/ $:/UpgradeLibrary/List` +
-        ' --savetiddler $:/UpgradeLibrary/List recipes/library/tiddlers.json' +
-        ' --rendertiddler $:/plugins/tiddlywiki/pluginlibrary/library.template.html index-raw.html text/plain' +
-        ' --deletetiddlers \'[[$:/UpgradeLibrary]] [[$:/UpgradeLibrary/List]]\'', { env: { TIDDLYWIKI_PLUGIN_PATH: path.resolve(distDir, '..', 'plugins')}}
-    );
-
-    // 最小化：HTML
-    if (minify) {
-        shellI(`npx html-minifier-terser -c scripts/html-minifier-terser.config.json -o ${distDir}/index.html ${distDir}/index-raw.html && rm ${distDir}/index-raw.html`);
-    } else {
-        shellI(`mv ${distDir}/index-raw.html ${distDir}/${htmlName}`);
-    }
-};
