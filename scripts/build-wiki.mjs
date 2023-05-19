@@ -102,10 +102,4 @@ function buildLibrary(pluginFilter, distDir, minify) {
     } else {
         shellI(`mv ${distDir}/index-raw.html ${distDir}/${htmlName}`);
     }
-}
-
-module.exports = {
-    buildOnlineHTML: buildOnlineHTML,
-    buildOfflineHTML: buildOfflineHTML,
-    buildLibrary: buildLibrary,
 };
