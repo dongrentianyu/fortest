@@ -76,3 +76,9 @@ function buildOfflineHTML(distDir, htmlName, minify, excludeFilter) {
         shellI(`mv ${distDir}/index-raw.html ${distDir}/${htmlName}`);
     }
 }
+
+module.exports = {
+    buildOnlineHTML: buildOnlineHTML,
+    buildOfflineHTML: buildOfflineHTML,
+    buildLibrary: buildLibrary,
+};
