@@ -1,0 +1,170 @@
+created: 20230321144836969
+creator: 马不前
+modified: 20230525085704457
+modifier: 马不前
+tags: self-template
+title: Scrolling-Card-Style5
+type: text/vnd.tiddlywiki
+
+<!--使用这个模板需要添加`最近修改选项`、`node-explorer-colorful`、`$:/core/ui/SideBar/Open`条目-->
+<!--具体参考下面的模板-->
+<!--有些样式我也说不上来为什么要这样设置，有没有更好的设置我也不清楚，我只是仅我所能设计得更好，但不一定让所有人都满意。-->
+<!--这个模板最大的更新就是可以在移动直接显示正文，方便截屏分享，也不用滚动条，省得边框不好调整。--->
+
+\define reuse-pane(content)
+\whitespace trim
+
+<style>
+.reuse-pane {
+	position: absolute;
+    background-color: #f0f4f0;
+	right: 5px;
+	width: auto;
+    max-width: 5px;
+	height: 100px;
+	overflow: scroll;
+	border: 5px #f0f4f0 transparent;
+	border-top: 0;
+	box-sizing: content-box;
+	transition: max-width 0.5s;
+}
+.reuse-pane:hover {
+  max-width: 65vw;
+  max-height: 100vw;
+}
+.reuse-pane-content {
+	background-color: #f0f4f0;
+	padding: 0px 5px;
+	padding-bottom: 5px;
+    justify-content: center;
+    font-size:25px;
+    height:10em;
+    align-items: center;
+	overflow: scroll;
+    text-align: center;
+	display: inline-block;
+    min-height: 50px;
+	max-height: 250px;
+    overflow-y: auto;
+    overflow-x: hidden;
+	flex-direction: column;
+}
+</style>
+<div class="reuse-pane">
+  <small class="reuse-pane-content">$content$</small>
+</div>
+\end
+
+<style>
+@media only screen and (max-width: 767px) {
+  .top-section, .left-section, .right-section, .container, .bottom-section {
+    display:none !important;
+  }
+}
+@media screen and (max-width: 767px) {
+  /* 在宽度小于 768 像素的设备上生效 */
+  .mobile-only {
+    display: block;
+  }
+}
+		.container {
+		display: flex;
+		flex-direction: column;
+		margin: 0;
+		padding: 0;
+		max-height: 800px;
+	}
+
+	.top-section {
+		background-color: #f5f5ee;
+		flex: 1;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		overflow: scroll;
+		min-height: 80px;
+		max-height: 200px;
+		text-align: center;
+	}
+
+	.bottom-section {
+		background-color: #FFF;
+		flex: 6;
+		display: flex;
+		flex-direction: row;
+		margin: 0;
+		padding: 0;
+		overflow: scroll;
+	}
+
+	.left-section {
+		background-color: #f5f5ee;
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		margin: 0px;
+		padding: 5px;
+		overflow: scroll;
+		max-height: 600px;
+	}
+.left-section::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+	.right-section {
+		background-color: #f5f5ee;
+    padding: 20px;
+		flex: 5;
+		display: flex;
+		margin: 0;
+		position: relative;
+		min-height: 220px;
+		max-height: 600px;
+    overflow-y: auto;
+    overflow-x: hidden;
+	}
+.right-section::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+</style>
+
+<div class="container">
+	<div class="bottom-section">
+		<div class="left-section">
+			<div style="flex: 1;">
+				<$transclude tiddler={{$:/core/ui/SideBar/Open}} field=title mode=block/>
+			</div>
+			<div style="flex: 1;">
+				<$transclude tiddler={{最近修改与最近创建条目}} field=title mode=block/>
+			</div>
+		</div>
+		<div class="right-section">
+
+<$macrocall $name="reuse-pane" content="""<$transclude tiddler={{node-explorer-colorful}} field=title mode=block/>""" />
+
+<$reveal tag="div" class="tc-tiddler-body" type="nomatch" stateTitle=<<folded-state>> text="hide" retain="yes" animate="yes">
+			
+					<$transclude tiddler=<<currentTiddler>> />
+					
+<$button popup=<<qualify "$:/state/popup/fishingdeck">> tooltip="回到顶端" aria-label="回到顶端" class=<<tv-config-toolbar-class>> selectedClass="tc-selected" style="display: block;width: 100%;margin: 1em auto;">
+<$action-navigate $to=<<currentTiddler>>/>
+{{$:/core/images/up-arrow}}
+</$button>
+</$reveal>
+		</div>
+	</div>
+</div>
+
+
+<div class="mobile-only">
+<$reveal tag="div" class="tc-tiddler-body" type="nomatch" stateTitle=<<folded-state>> text="hide" retain="yes" animate="yes">
+			
+					<$transclude tiddler=<<currentTiddler>> />
+					
+<$button popup=<<qualify "$:/state/popup/fishingdeck">> tooltip="回到顶端" aria-label="回到顶端" class=<<tv-config-toolbar-class>> selectedClass="tc-selected" style="display: block;width: 100%;margin: 1em auto;">
+<$action-navigate $to=<<currentTiddler>>/>
+{{$:/core/images/up-arrow}}
+</$button>
+</$reveal>
+		</div>
